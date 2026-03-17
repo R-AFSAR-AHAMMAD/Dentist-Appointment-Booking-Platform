@@ -1,20 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserShield, faCalendarDays } from '@fortawesome/free-solid-svg-icons';
+import { faUserShield, faCalendarDays, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+import Login from './Login';
 
 const AdminPanel = () => {
 
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    getAppointments();
+    const token = localStorage.getItem('adminToken');
+    if (token) {
+      setIsLoggedIn(true);
+      getAppointments(token);
+    } else {
+      setLoading(false);
+    }
   }, []);
 
-  const getAppointments = () => {
-    axios.get('http://localhost:5000/api/appointments')
+  const getAppointments = (token) => {
+    axios.get('http://localhost:5000/api/appointments', {
+      headers: {
+        authorization: token
+      }
+    })
       .then(function(response) {
         setAppointments(response.data);
         setLoading(false);
@@ -24,6 +36,24 @@ const AdminPanel = () => {
         setError('Failed to load appointments. Please try again.');
         setLoading(false);
       });
+  }
+
+  const handleLogin = () => {
+    const token = localStorage.getItem('adminToken');
+    setIsLoggedIn(true);
+    setLoading(true);
+    getAppointments(token);
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminToken');
+    setIsLoggedIn(false);
+    setAppointments([]);
+  }
+
+  // Show login page if not logged in
+  if (!isLoggedIn) {
+    return <Login onLogin={handleLogin} />;
   }
 
   if (loading) {
@@ -46,10 +76,19 @@ const AdminPanel = () => {
     <div className="p-6">
 
       {/* Heading */}
-      <h2 className="text-2xl font-bold text-center text-blue-600 mb-6">
-        <FontAwesomeIcon icon={faUserShield} className="mr-2" />
-        Admin Panel
-      </h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-blue-600">
+          <FontAwesomeIcon icon={faUserShield} className="mr-2" />
+          Admin Panel
+        </h2>
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
+        >
+          <FontAwesomeIcon icon={faRightFromBracket} className="mr-2" />
+          Logout
+        </button>
+      </div>
 
       {appointments.length === 0 ? (
         <p className="text-center text-gray-500">No appointments found.</p>
