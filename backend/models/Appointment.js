@@ -21,6 +21,10 @@ const appointmentSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Dentist',
     required: true
+  },
+  status: {
+    type: String,
+    default: 'Booked'
   }
 }, { timestamps: true });
 

@@ -16,13 +16,14 @@ app.use(express.json());
 // Public routes
 app.use('/api/dentists', dentistRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/appointments', appointmentRoutes);
 
-// Protected routes (admin only)
-app.use('/api/appointments', verifyToken, appointmentRoutes);
+// Protected route (admin only - fetch all appointments)
+app.use('/api/admin/appointments', verifyToken, appointmentRoutes);
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('MongoDB connected');
     app.listen(5000, () => console.log('Server running on port 5000'));
   })
-  .catch((e) => console.log('DB connection error:', e));
+  .catch((err) => console.log('DB connection error:', err));
