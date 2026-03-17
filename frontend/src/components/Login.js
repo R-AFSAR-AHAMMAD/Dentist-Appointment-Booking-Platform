@@ -21,13 +21,13 @@ const Login = (props) => {
     };
 
     axios.post('http://localhost:5000/api/auth/login', loginData)
-      .then(function(response) {
+      .then((response) => {
         console.log('Login success:', response.data);
         localStorage.setItem('adminToken', response.data.token);
         setLoading(false);
         props.onLogin();
       })
-      .catch(function(error) {
+      .catch((error)=> {
         console.log('Login error:', error);
         setError('Invalid username or password');
         setLoading(false);
@@ -78,7 +78,6 @@ const Login = (props) => {
             </div>
           </div>
 
-          {/* Error */}
           {error && (
             <p className="text-red-500 text-sm mb-3">{error}</p>
           )}
@@ -94,7 +93,7 @@ const Login = (props) => {
 
         </form>
 
-        {/* Hint */}
+        
         <p className="text-center text-gray-400 text-xs mt-4">
           Username: admin | Password: password
         </p>

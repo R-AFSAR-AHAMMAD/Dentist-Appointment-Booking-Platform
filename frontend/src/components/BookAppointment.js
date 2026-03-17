@@ -5,7 +5,7 @@ import { faXmark, faCalendarCheck } from '@fortawesome/free-solid-svg-icons';
 
 const BookAppointment = (props) => {
 
-  const {dentist,onClose} = props;
+  const { dentist, onClose } = props;
 
   const [patientName, setPatientName] = useState('');
   const [age, setAge] = useState('');
@@ -15,8 +15,72 @@ const BookAppointment = (props) => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
+  // Validation errors
+  const [nameError, setNameError] = useState('');
+  const [ageError, setAgeError] = useState('');
+  const [genderError, setGenderError] = useState('');
+  const [dateError, setDateError] = useState('');
+
+  const validateForm = () => {
+    let isValid = true;
+
+    // Validate name
+    if (patientName.trim() === '') {
+      setNameError('Patient name is required');
+      isValid = false;
+    } else if (patientName.trim().length < 3) {
+      setNameError('Name must be at least 3 characters');
+      isValid = false;
+    } else {
+      setNameError('');
+    }
+
+    // Validate age
+    if (age === '') {
+      setAgeError('Age is required');
+      isValid = false;
+    } else if (age < 1 || age > 120) {
+      setAgeError('Age must be between 1 and 120');
+      isValid = false;
+    } else {
+      setAgeError('');
+    }
+
+    // Validate gender
+    if (gender === '') {
+      setGenderError('Please select a gender');
+      isValid = false;
+    } else {
+      setGenderError('');
+    }
+
+    // Validate date
+    if (appointmentDate === '') {
+      setDateError('Appointment date is required');
+      isValid = false;
+    } else {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const selectedDate = new Date(appointmentDate);
+      if (selectedDate < today) {
+        setDateError('Appointment date cannot be in the past');
+        isValid = false;
+      } else {
+        setDateError('');
+      }
+    }
+
+    return isValid;
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Run validation first
+    if (!validateForm()) {
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -29,12 +93,12 @@ const BookAppointment = (props) => {
     };
 
     axios.post('http://localhost:5000/api/appointments', appointmentData)
-      .then(function(response) {
+      .then((response) => {
         console.log('Appointment booked:', response.data);
         setSuccess(true);
         setLoading(false);
       })
-      .catch(function(error) {
+      .catch((error) => {
         console.log('Error:', error);
         setError('Failed to book appointment. Please try again.');
         setLoading(false);
@@ -84,10 +148,10 @@ const BookAppointment = (props) => {
                 type="text"
                 value={patientName}
                 onChange={(e) => setPatientName(e.target.value)}
-                required
                 placeholder="Enter patient name"
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
               />
+              {nameError && <p className="text-red-500 text-xs mt-1">{nameError}</p>}
             </div>
 
             {/* Age */}
@@ -97,10 +161,10 @@ const BookAppointment = (props) => {
                 type="number"
                 value={age}
                 onChange={(e) => setAge(e.target.value)}
-                required
                 placeholder="Enter age"
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
               />
+              {ageError && <p className="text-red-500 text-xs mt-1">{ageError}</p>}
             </div>
 
             {/* Gender */}
@@ -109,7 +173,6 @@ const BookAppointment = (props) => {
               <select
                 value={gender}
                 onChange={(e) => setGender(e.target.value)}
-                required
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
               >
                 <option value="">Select gender</option>
@@ -117,6 +180,7 @@ const BookAppointment = (props) => {
                 <option value="Female">Female</option>
                 <option value="Other">Other</option>
               </select>
+              {genderError && <p className="text-red-500 text-xs mt-1">{genderError}</p>}
             </div>
 
             {/* Appointment Date */}
@@ -126,9 +190,9 @@ const BookAppointment = (props) => {
                 type="date"
                 value={appointmentDate}
                 onChange={(e) => setAppointmentDate(e.target.value)}
-                required
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
               />
+              {dateError && <p className="text-red-500 text-xs mt-1">{dateError}</p>}
             </div>
 
             {/* Error Message */}
