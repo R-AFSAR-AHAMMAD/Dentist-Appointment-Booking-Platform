@@ -20,7 +20,7 @@ const Login = (props) => {
       password: password
     };
 
-    axios.post('https://your-render-url.onrender.com/api/auth/login', loginData)
+    axios.post('https://dentist-appointment-booking-platform-o0vx.onrender.com/api/auth/login', loginData)
       .then((response) => {
         console.log('Login success:', response.data);
         localStorage.setItem('adminToken', response.data.token);
