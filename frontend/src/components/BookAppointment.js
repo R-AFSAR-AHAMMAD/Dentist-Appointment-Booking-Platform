@@ -92,7 +92,7 @@ const BookAppointment = (props) => {
       dentistId: dentist._id
     };
 
-    axios.post('http://localhost:5000/api/appointments', appointmentData)
+    axios.post('https://dentist-appointment-booking-platform-o0vx.onrender.com/api/appointments', appointmentData)
       .then((response) => {
         console.log('Appointment booked:', response.data);
         setSuccess(true);

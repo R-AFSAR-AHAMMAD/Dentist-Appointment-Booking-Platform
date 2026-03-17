@@ -22,7 +22,7 @@ const DentistList = () => {
   }, []);
 
   const getDentists = () => {
-    axios.get('http://localhost:5000/api/dentists')
+    axios.get('https://dentist-appointment-booking-platform-o0vx.onrender.com/api/dentists')
       .then((response) => {
         setDentists(response.data);
         setFilteredDentists(response.data);

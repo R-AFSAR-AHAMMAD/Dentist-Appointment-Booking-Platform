@@ -26,7 +26,7 @@ const AdminPanel = () => {
   }, []);
 
   const getAppointments = (token) => {
-    axios.get('http://localhost:5000/api/admin/appointments', {
+    axios.get('https://dentist-appointment-booking-platform-o0vx.onrender.com/api/admin/appointments', {
       headers: {
         authorization: token
       }
@@ -58,7 +58,7 @@ const AdminPanel = () => {
   const handleStatusChange = (appointmentId, newStatus) => {
     const token = localStorage.getItem('adminToken');
 
-    axios.put('http://localhost:5000/api/admin/appointments/' + appointmentId, 
+    axios.put('https://dentist-appointment-booking-platform-o0vx.onrender.com/api/admin/appointments/' + appointmentId, 
       { status: newStatus },
       {
         headers: {

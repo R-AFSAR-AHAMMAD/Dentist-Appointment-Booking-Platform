@@ -20,7 +20,7 @@ const Login = (props) => {
       password: password
     };
 
-    axios.post('http://localhost:5000/api/auth/login', loginData)
+    axios.post('https://your-render-url.onrender.com/api/auth/login', loginData)
       .then((response) => {
         console.log('Login success:', response.data);
         localStorage.setItem('adminToken', response.data.token);
